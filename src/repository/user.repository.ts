@@ -1,49 +1,52 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { User } from '../entity/user';
+import { IUser } from '../interface/userInterfaces';
 
 export class UserRepository {
   typeORMRepository: Repository<User>;
-  constructor() {}
 
-  async createUser(value) {
+  async createUser(userData: IUser): Promise<IUser> {
     try {
       this.typeORMRepository = getRepository(User);
-      const user = this.typeORMRepository.create(value);
-      const result = await this.typeORMRepository.save(user);
 
-      return ({ DBResult: { data: result, status: 200 } });
+      return await this.typeORMRepository.save(userData);
     } catch (err) {
-      return ({ DBError: { data: err.message, status: 500 } });
+      console.error(err);
+
+      return null;
     }
   }
-  async getUserByEmail(value) {
+  async getUserById(id: string): Promise<IUser> {
     try {
       this.typeORMRepository = getRepository(User);
-      const result = await this.typeORMRepository.findOne({ where: { email: value.email } });
 
-      return ({ DBResult: { data: result, status: 200 } });
+      return await this.typeORMRepository.findOne({ where: { id } });
     } catch (err) {
-      return ({ DBError: { data: err.message, status: 500 } });
+      console.error(err);
+
+      return null;
     }
   }
-  async addInfoUser(value, id: number) {
+  async addInfoUser(userAdditionalInfo: IUser, id: string): Promise<UpdateResult> {
     try {
       this.typeORMRepository = getRepository(User);
-      const result = await this.typeORMRepository.createQueryBuilder().update(User).set({
-        first_name: value.first_name,
-        last_name: value.last_name,
-        date_of_birthday: value.date_of_birthday,
-        gender: value.gender,
+
+      return await this.typeORMRepository.createQueryBuilder().update(User).set({
+        first_name: userAdditionalInfo.first_name,
+        last_name: userAdditionalInfo.last_name,
+        date_of_birthday: userAdditionalInfo.date_of_birthday,
+        gender: userAdditionalInfo.gender,
         activated_at: new Date(),
       })
         .where('id = :id', { id })
+        .returning('*')
         .execute();
-
-      return ({ DBResult: { data: 'User was activated', status: 200 } });
     } catch (err) {
-      return ({ DBError: { data: err.message, status: 500 } });
+      console.error(err);
+
+      return null;
     }
   }
 }
 
-export const user = new UserRepository();
+export const userRepository = new UserRepository();

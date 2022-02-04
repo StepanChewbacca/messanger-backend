@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { createConnection } from 'typeorm/globals';
 import dotenv from 'dotenv';
 import { router } from './src/router/router';
-import { IError } from './src/Interface/Error';
+import { IError } from './src/interface/error';
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ createConnection().then(async () => {
 
   app.use(express.json());
 
-  app.use('/', router);
+  app.use('/user', router);
 
   app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
     res.status(error.status);

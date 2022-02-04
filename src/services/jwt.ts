@@ -1,21 +1,18 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { IUser } from '../interface/userInterfaces';
 
 dotenv.config();
 const { JWT_SECRET_KEY } = process.env;
 
-export const generateToken = (data: any) => {
-  const token = jwt.sign(data.id, JWT_SECRET_KEY);
+export const generateToken = (id: IUser['id']): number => jwt.sign(id, JWT_SECRET_KEY);
 
-  return token;
-};
-
-export const decodeToken = ({ token }: any) => {
+export const decodeToken = (token: string | string[]): string => {
   try {
-    const result = jwt.verify(token, JWT_SECRET_KEY);
-
-    return { result };
+    return jwt.verify(token, JWT_SECRET_KEY);
   } catch (error) {
-    return { error };
+    console.error(error);
+
+    return null;
   }
 };

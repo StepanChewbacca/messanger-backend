@@ -4,39 +4,44 @@ import {
   queryTokenValidation,
   signUpValidation,
 } from '../middlewares/validation/user.validator';
-import { user } from '../repository/user.repository';
+import { userRepository } from '../repository/user.repository';
 import { generateToken } from '../services/jwt';
-import { sendMMail } from '../services/sendMail';
+import { sendMail } from '../services/sendMail';
 import { checkValidToken, getUserIdFromToken } from '../services/checkToken';
+import { hash } from '../services/bcrypt';
 
 class UserController {
-  constructor() {}
-
-  async createUser(req: Request, res: Response, next: NextFunction): Promise<any> {
+  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = signUpValidation.validate(req.body, { abortEarly: false });
 
     if (error) {
       return next({ data: error.details[0].message, status: 400 });
     }
 
-    const { DBResult, DBError } = await user.createUser(value);
+    value.password = await hash(value.password);
 
-    if (DBError) return next({ data: DBError.data, status: 400 });
+    const user = await userRepository.createUser(value);
 
-    const token = generateToken(DBResult.data);
-    const { MailerResult, MailerError } = await sendMMail(DBResult.data, token);
+    if (!user) return next({ data: 'InternalError', status: 400 });
 
-    if (MailerError) return next({ data: MailerError.data, status: MailerError.status });
+    const token = generateToken(user.id);
+    const linkInEmail = await sendMail(user.email, token);
 
-    res.status(MailerResult.status).send(MailerResult);
+    if (!linkInEmail) return next({ data: 'Email was not sent', status: 500 });
+
+    res.status(200).send(linkInEmail);
   }
 
-  async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<any> {
+  async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
     if (error) return next({ data: error.details[0].message, status: 400 });
 
-    if (await checkValidToken(value)) {
+    const isValidToken = await checkValidToken(value.token);
+
+    console.log(isValidToken);
+
+    if (isValidToken) {
       res.setHeader('token', value.token);
       res.redirect('http://sluipgenius.pp.ua/getImage/7');
     } else {
@@ -44,20 +49,20 @@ class UserController {
     }
   }
 
-  async addInfoUser(req: Request, res: Response, next: NextFunction): Promise<any> {
+  async addInfoUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
     if (error) return next({ data: error, status: 400 });
 
-    const { result, TokenError } = await getUserIdFromToken(req.headers);
+    const userId = await getUserIdFromToken(req.headers.token as string);
 
-    if (TokenError) return next({ data: TokenError.data, status: 500 });
+    if (!userId) return next({ data: 'Invalid token', status: 400 });
 
-    const { DBResult, DBError } = await user.addInfoUser(value, result);
+    const user = await userRepository.addInfoUser(value, userId);
 
-    if (DBError) return next({ data: DBError.data, status: 500 });
+    if (!user) return next({ data: 'Internal Error', status: 500 });
 
-    res.status(DBResult.status).send(DBResult);
+    res.status(200).send(user);
   }
 }
 

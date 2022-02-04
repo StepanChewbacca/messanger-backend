@@ -1,21 +1,26 @@
 import { decodeToken } from './jwt';
-import { user } from '../repository/user.repository';
+import { userRepository } from '../repository/user.repository';
 
-export const checkValidToken = async (value) => {
-  const { result, error } = decodeToken(value);
+export const checkValidToken = async (token: string): Promise<boolean> => {
+  console.log(token);
+  const validToken = decodeToken(token);
 
-  if (error) return false;
-  const { DBResult, DBError } = await user.getUserByEmail(result);
+  console.log(validToken);
 
-  if (DBError) return false;
+  if (!validToken) return false;
+  const user = await userRepository.getUserById(validToken);
 
-  return !!DBResult;
+  if (!user) return false;
+
+  return !!user.id;
 };
 
-export const getUserIdFromToken = async (headers) => {
-  const { result, error } = decodeToken(headers);
+export const getUserIdFromToken = async (token: string): Promise<string> => {
+  const decodedToken = decodeToken(token);
 
-  if (error) return { TokenError: { data: error.message, status: 400 } };
+  console.log(typeof decodedToken);
 
-  return { result };
+  if (!decodedToken) return null;
+
+  return decodedToken;
 };
