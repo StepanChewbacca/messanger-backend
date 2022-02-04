@@ -22,10 +22,16 @@ export const sendMail = async (email: string, token: number): Promise<string> =>
       Please visit ${linkInEmail}</h1>`,
     };
 
-    await sendGrid.send(emailSend);
+    const sentEmail = await sendGrid.send(emailSend);
 
-    return linkInEmail;
+    if (sentEmail[0].statusCode === 202) {
+      return linkInEmail;
+    }
+
+    return null;
   } catch (error) {
+    console.error(error);
+
     return null;
   }
 };

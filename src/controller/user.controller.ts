@@ -5,10 +5,8 @@ import {
   signUpValidation,
 } from '../middlewares/validation/user.validator';
 import { userRepository } from '../repository/user.repository';
-import { generateToken } from '../services/jwt';
-import { sendMail } from '../services/sendMail';
 import { checkValidToken, getUserIdFromToken } from '../services/checkToken';
-import { hash } from '../services/bcrypt';
+import { createUser } from '../services/user.services/createUser.service';
 
 class UserController {
   async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -18,18 +16,11 @@ class UserController {
       return next({ data: error.details[0].message, status: 400 });
     }
 
-    value.password = await hash(value.password);
+    const { result, error: servicesError } = await createUser(value);
 
-    const user = await userRepository.createUser(value);
+    if (servicesError) return next({ data: 'Email was not sent', status: 500 });
 
-    if (!user) return next({ data: 'InternalError', status: 400 });
-
-    const token = generateToken(user.id);
-    const linkInEmail = await sendMail(user.email, token);
-
-    if (!linkInEmail) return next({ data: 'Email was not sent', status: 500 });
-
-    res.status(200).send(linkInEmail);
+    res.status(200).send(result);
   }
 
   async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<void> {

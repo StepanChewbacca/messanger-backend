@@ -1,13 +1,13 @@
 import { getRepository, Repository, UpdateResult } from 'typeorm';
-import { User } from '../entity/user';
+import { UserEntity } from '../entity/user.entity';
 import { IUser } from '../interface/userInterfaces';
 
 export class UserRepository {
-  typeORMRepository: Repository<User>;
+  typeORMRepository: Repository<UserEntity>;
 
   async createUser(userData: IUser): Promise<IUser> {
     try {
-      this.typeORMRepository = getRepository(User);
+      this.typeORMRepository = getRepository(UserEntity);
 
       return await this.typeORMRepository.save(userData);
     } catch (err) {
@@ -18,7 +18,7 @@ export class UserRepository {
   }
   async getUserById(id: string): Promise<IUser> {
     try {
-      this.typeORMRepository = getRepository(User);
+      this.typeORMRepository = getRepository(UserEntity);
 
       return await this.typeORMRepository.findOne({ where: { id } });
     } catch (err) {
@@ -29,9 +29,9 @@ export class UserRepository {
   }
   async addInfoUser(userAdditionalInfo: IUser, id: string): Promise<UpdateResult> {
     try {
-      this.typeORMRepository = getRepository(User);
+      this.typeORMRepository = getRepository(UserEntity);
 
-      return await this.typeORMRepository.createQueryBuilder().update(User).set({
+      return await this.typeORMRepository.createQueryBuilder().update(UserEntity).set({
         first_name: userAdditionalInfo.first_name,
         last_name: userAdditionalInfo.last_name,
         date_of_birthday: userAdditionalInfo.date_of_birthday,
