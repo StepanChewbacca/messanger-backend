@@ -1,3 +1,5 @@
+import { UpdateResult } from 'typeorm';
+
 export interface IUser {
     id: number,
     email: string,
@@ -11,3 +13,6 @@ export interface IUser {
     session: { session_id: number, expired_at: Date }[];
 }
 
+export interface IUserChangePassword {
+    user: UpdateResult
+}

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { constants as httpConstants } from 'http2';
 import {
   additionalInfoValidation, emailValidation, passwordValidation,
   queryTokenValidation, signValidation,
@@ -14,20 +15,20 @@ class UserController {
     const { value, error } = signValidation.validate(req.body, { abortEarly: false });
 
     if (error) {
-      return next({ data: error.details[0].message, status: 400 });
+      return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
     }
 
     const { result, error: servicesError } = await userServices.createUser(value);
 
-    if (servicesError) return next({ data: 'Email was not sent', status: 500 });
+    if (servicesError) return next({ data: 'Email was not sent', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
-    res.status(200).send(result);
+    res.status(httpConstants.HTTP_STATUS_OK).send(result);
   };
 
   confirmEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
-    if (error) return next({ data: error.details[0].message, status: 400 });
+    if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const isValidToken = await checkValidToken(value.token, JWT_SIGN_UP_KEY);
 
@@ -35,7 +36,7 @@ class UserController {
 
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://sluipgenius.pp.ua/getImage/7');
+      res.redirect('http://www.stepanchewbacca.pp.ua/images/download/9');
     } else {
       res.redirect('https://www.google.com');
     }
@@ -44,57 +45,53 @@ class UserController {
   addInfoUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error, status: 400 });
+    if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const userEmail = await getUserEmailFromToken(req.headers.token as string, JWT_SIGN_UP_KEY);
 
-    if (!userEmail) return next({ data: 'Invalid token', status: 400 });
+    if (!userEmail) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const user = await userRepository.addInfoUser(value, userEmail);
 
-    if (!user) return next({ data: 'Internal Error', status: 500 });
+    if (!user) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
-    res.status(200).send(user);
+    res.status(httpConstants.HTTP_STATUS_OK).send(user);
   };
 
   signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = signValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error, status: 400 });
+    if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const token = await userServices.signIn(value);
 
-    if (!token) return next({ data: 'Internal Error', status: 500 });
+    if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
-    res.status(200).send(token);
+    res.status(httpConstants.HTTP_STATUS_OK).send(token);
   };
 
   forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = emailValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: 'Invalid email', status: 400 });
+    if (error) return next({ data: 'Invalid email', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const token = await userServices.forgotPassword(value);
 
-    if (!token) return next({ data: 'Internal Error', status: 500 });
+    if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
-    res.status(200).send(token);
+    res.status(httpConstants.HTTP_STATUS_OK).send(token);
   };
 
   confirmChangePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
-    if (error) return next({ data: error.details[0].message, status: 400 });
+    if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const isValidToken = await checkValidToken(value.token, JWT_FORGOT_PASSWORD_KEY);
 
-    // const confirmToken = generateConfirmToken(value.email)
-
-    console.log(isValidToken);
-
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://sluipgenius.pp.ua/getImage/7');
+      res.redirect('http://www.stepanchewbacca.pp.ua/images/download/9');
     } else {
       res.redirect('https://www.google.com');
     }
@@ -103,13 +100,13 @@ class UserController {
   changePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { value, error } = passwordValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error, status: 400 });
+    if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const { result, error: changePasswordError } = await userServices.changePassword(value, req.headers.token);
 
-    if (changePasswordError) return next({ data: 'Invalid token', status: 400 });
+    if (changePasswordError) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    res.status(200).send(result);
+    res.status(httpConstants.HTTP_STATUS_OK).send(result);
   };
 }
 
