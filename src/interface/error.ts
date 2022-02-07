@@ -7,4 +7,3 @@ export interface IServiceResult<T, T2>{
         result?: T,
         error?: T2
 }
-

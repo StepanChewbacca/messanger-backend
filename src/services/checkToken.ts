@@ -1,8 +1,6 @@
 import { decodeToken } from './jwt';
 import { userRepository } from '../repository/user.repository';
 
-//const { JWT_SIGN_UP_KEY, JWT_SIGN_IN_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
-
 export const checkValidToken = async (token: string, JWT_SECRET_KEY: string): Promise<boolean> => {
   console.log(token);
   const decodedToken = decodeToken(token, JWT_SECRET_KEY);
@@ -11,6 +9,8 @@ export const checkValidToken = async (token: string, JWT_SECRET_KEY: string): Pr
 
   if (!decodedToken) return false;
   const user = await userRepository.getUserByEmail(decodedToken);
+
+  console.log(user);
 
   if (!user) return false;
 

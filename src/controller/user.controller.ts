@@ -7,7 +7,7 @@ import { userRepository } from '../repository/user.repository';
 import { checkValidToken, getUserEmailFromToken } from '../services/checkToken';
 import { userServices } from '../services/user.services/user.service';
 
-const { JWT_SIGN_UP_KEY, JWT_SIGN_IN_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
+const { JWT_SIGN_UP_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
 
 class UserController {
   createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
