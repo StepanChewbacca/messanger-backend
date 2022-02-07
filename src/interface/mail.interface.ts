@@ -1,3 +1,3 @@
-export interface IMailer {
+export interface ILinkInEmail {
     linkInEmail: string
 }

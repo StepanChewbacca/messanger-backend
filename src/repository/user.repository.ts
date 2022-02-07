@@ -16,18 +16,8 @@ export class UserRepository {
       return null;
     }
   }
-  async getUserById(id: string): Promise<IUser> {
-    try {
-      this.typeORMRepository = getRepository(UserEntity);
 
-      return await this.typeORMRepository.findOne({ where: { id } });
-    } catch (err) {
-      console.error(err);
-
-      return null;
-    }
-  }
-  async addInfoUser(userAdditionalInfo: IUser, id: string): Promise<UpdateResult> {
+  async addInfoUser(userAdditionalInfo: IUser, email: string): Promise<UpdateResult> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
@@ -38,7 +28,7 @@ export class UserRepository {
         gender: userAdditionalInfo.gender,
         activated_at: new Date(),
       })
-        .where('id = :id', { id })
+        .where('email = :email', { email })
         .returning('*')
         .execute();
     } catch (err) {
@@ -47,6 +37,37 @@ export class UserRepository {
       return null;
     }
   }
+
+  async getUserByEmail(email: IUser['email']): Promise<IUser> {
+    try {
+      this.typeORMRepository = getRepository(UserEntity);
+
+      return await this.typeORMRepository.findOne({ where: { email } });
+    } catch (err) {
+      console.error(err);
+
+      return null;
+    }
+  }
+
+  changePassword = async (newPassword: IUser['password'], email: string): Promise<UpdateResult> => {
+    try {
+      console.log(newPassword, 'jopa');
+      console.log(email)
+      this.typeORMRepository = getRepository(UserEntity);
+
+      return await this.typeORMRepository.createQueryBuilder().update(UserEntity).set({
+        password: newPassword,
+      })
+        .where('email = :email', { email })
+        .returning('*')
+        .execute();
+    } catch (err) {
+      console.error(err);
+
+      return null;
+    }
+  };
 }
 
 export const userRepository = new UserRepository();

@@ -1,25 +1,33 @@
 import dotenv from 'dotenv';
 import sendGrid from '@sendgrid/mail';
 import { routes } from '../constants/routes';
-import { IError } from '../interface/error';
-import { IMailer } from '../interface/mail.interface';
+import { mailerText } from '../constants/mailer';
 
 dotenv.config();
 
-const { API_KEY, HOST, PORT } = process.env;
+const {
+  SG_API_KEY, HOST, PORT, EMAIL_FROM,
+} = process.env;
 
-sendGrid.setApiKey(API_KEY);
+sendGrid.setApiKey(SG_API_KEY);
 
-export const sendMail = async (email: string, token: number): Promise<string> => {
+export const sendMail = async (email: string, token: string, routeForMail: string): Promise<string> => {
   try {
-    const linkInEmail = `http://${HOST}:${PORT}/${routes.USER}/${routes.CONFIRM_EMAIL}?token=${token}`;
+    let textForMail;
+
+    if (routeForMail === routes.CONFIRM_EMAIL) {
+      textForMail = mailerText.SIGN_UP_TEXT;
+    } else if (routeForMail === routes.FORGOT_PASSWORD) {
+      textForMail = mailerText.FORGOT_PASSWORD_TEXT;
+    }
+
+    const linkInEmail = `http://${HOST}:${PORT}${routes.USER}${routeForMail}?token=${token}`;
     const emailSend = {
-      to: email,
-      from: 'miha1488plet@gmail.com',
+      to: 'qweqwe322322322@gmail.com',
+      from: EMAIL_FROM,
       subject: 'Email Verification',
-      text: 'Hi! please confirm your email',
-      html: `<h1>Hi! please confirm your email. 
-      Please visit ${linkInEmail}</h1>`,
+      text: textForMail,
+      html: `<h1> ${textForMail} ${linkInEmail}</h1>`,
     };
 
     const sentEmail = await sendGrid.send(emailSend);

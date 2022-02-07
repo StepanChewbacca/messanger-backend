@@ -4,12 +4,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { SALT_BCRYPT } = process.env;
 
-export const hash = async (password: string) => {
-  const pass = await bcrypt.hash(password, +SALT_BCRYPT);
+export const hash = (password: string): Promise<string> => bcrypt.hash(password, +SALT_BCRYPT);
 
-  return pass;
-};
-
-export const compare = async (password: string, hashPassword: string) => {
-  await bcrypt.compare(password, hashPassword);
-};
+export const compare = async (password: string, hashPassword: string): Promise<boolean> => bcrypt.compare(password, hashPassword);

@@ -8,6 +8,3 @@ export interface IServiceResult<T, T2>{
         error?: T2
 }
 
-export interface ILinkInEmail {
-    linkInEmail: string
-}
