@@ -9,13 +9,14 @@ import { ILinkInEmail } from '../../interface/mail.interface';
 import { IToken } from '../../interface/token.interface';
 import { routes } from '../../constants/routes';
 import { getUserEmailFromToken } from '../checkToken';
+import {mailerRoutes} from "../../constants/mailer";
 
 const {
   JWT_FORGOT_PASSWORD_KEY,
 } = process.env;
 
 class UserServices {
-  createUser = async (value: IUser): Promise<IServiceResult<ILinkInEmail, IError>> => {
+  async createUser(value: IUser): Promise<IServiceResult<ILinkInEmail, IError>> {
     value.password = await hash(value.password);
 
     const user = await userRepository.createUser(value);
@@ -28,21 +29,28 @@ class UserServices {
     if (!linkInEmail) return { error: { data: 'Email was not send', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
     return { result: { linkInEmail } };
-  };
+  }
 
-  signIn = async (value: IUser): Promise<IServiceResult<IToken, IError>> => {
+  async signIn(value: IUser): Promise<IServiceResult<IToken, IError>> {
     const user = await userRepository.getUserByEmail(value.email);
 
     const password = await compare(value.password, user.password);
 
-    if (!user.activated_at || !password) return { error: { data: 'Invalid User', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
+    if (!user.activated_at || !password) {
+      return {
+        error: {
+          data: 'Invalid User',
+          status: httpConstants.HTTP_STATUS_BAD_REQUEST,
+        },
+      };
+    }
 
     const token = generateSignInToken(user.email);
 
     return { result: { token } };
-  };
+  }
 
-  forgotPassword = async (value: IUser): Promise<IServiceResult<ILinkInEmail, IError>> => {
+  async forgotPassword(value: IUser): Promise<IServiceResult<ILinkInEmail, IError>> {
     const user = await userRepository.getUserByEmail(value.email);
 
     if (!user.activated_at) return { error: { data: 'Invalid User', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
@@ -52,16 +60,16 @@ class UserServices {
     const linkInEmail = await sendMail(user.email, token, routes.FORGOT_PASSWORD);
 
     return { result: { linkInEmail } };
-  };
+  }
 
-  changePassword = async (value: IUser, token: string | string[]): Promise<IServiceResult<IUserChangePassword, IError>> => {
+  async changePassword(value: IUser, token: string): Promise<IServiceResult<IUserChangePassword, IError>> {
     const userEmail = await getUserEmailFromToken(token as string, JWT_FORGOT_PASSWORD_KEY);
     const user = await userRepository.changePassword(value.password, userEmail);
 
     if (!user) return { error: { data: 'Invalid User', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
     return { result: { user } };
-  };
+  }
 }
 
 export const userServices = new UserServices();

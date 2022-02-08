@@ -3,7 +3,7 @@ export interface IError {
         status: number;
 }
 
-export interface IServiceResult<T, T2>{
-        result?: T;
-        error?: T2;
+export interface IServiceResult<TResult, TError>{
+        result?: TResult;
+        error?: TError;
 }

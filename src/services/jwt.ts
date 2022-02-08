@@ -15,7 +15,7 @@ export const generateForgotPasswordToken = (email: IUser['email']): string => jw
 
 export const generateConfirmToken = (id: IUser['email']): string => jwt.sign(id, JWT_CONFIRM_KEY);
 
-export const decodeToken = (token: string | string[], JWT_SECRET_KEY: string): string => {
+export const decodeToken = (token: string, JWT_SECRET_KEY: string): string => {
   try {
     return jwt.verify(token, JWT_SECRET_KEY);
   } catch (error) {

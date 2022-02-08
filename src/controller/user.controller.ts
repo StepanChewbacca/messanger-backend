@@ -11,7 +11,7 @@ import { userServices } from '../services/user.services/user.service';
 const { JWT_SIGN_UP_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
 
 class UserController {
-  createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = signValidation.validate(req.body, { abortEarly: false });
 
     if (error) {
@@ -20,12 +20,17 @@ class UserController {
 
     const { result, error: servicesError } = await userServices.createUser(value);
 
-    if (servicesError) return next({ data: 'Email was not sent', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
+    if (servicesError) {
+      return next({
+        data: 'Email was not sent',
+        status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR,
+      });
+    }
 
     res.status(httpConstants.HTTP_STATUS_OK).send(result);
-  };
+  }
 
-  confirmEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
     if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
@@ -38,9 +43,9 @@ class UserController {
     } else {
       res.redirect('https://www.google.com');
     }
-  };
+  }
 
-  addInfoUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async addInfoUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
     if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
@@ -54,9 +59,9 @@ class UserController {
     if (!user) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
     res.status(httpConstants.HTTP_STATUS_OK).send(user);
-  };
+  }
 
-  signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = signValidation.validate(req.body, { abortEarly: false });
 
     if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
@@ -66,9 +71,9 @@ class UserController {
     if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
     res.status(httpConstants.HTTP_STATUS_OK).send(token);
-  };
+  }
 
-  forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = emailValidation.validate(req.body, { abortEarly: false });
 
     if (error) return next({ data: 'Invalid email', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
@@ -78,9 +83,9 @@ class UserController {
     if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
 
     res.status(httpConstants.HTTP_STATUS_OK).send(token);
-  };
+  }
 
-  confirmChangePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async confirmChangePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
     if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
@@ -93,19 +98,19 @@ class UserController {
     } else {
       res.redirect('https://www.google.com');
     }
-  };
+  }
 
-  changePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = passwordValidation.validate(req.body, { abortEarly: false });
 
     if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const { result, error: changePasswordError } = await userServices.changePassword(value, req.headers.token);
+    const { result, error: changePasswordError } = await userServices.changePassword(value, req.headers.token as string);
 
     if (changePasswordError) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     res.status(httpConstants.HTTP_STATUS_OK).send(result);
-  };
+  }
 }
 
 export const userController = new UserController();

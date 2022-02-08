@@ -1,6 +1,7 @@
 import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
 import { IUser } from '../interface/userInterfaces';
+import { sendErrorToTelegram } from '../services/telegramAPI.service';
 
 export class UserRepository {
   typeORMRepository: Repository<UserEntity>;
@@ -12,6 +13,7 @@ export class UserRepository {
       return await this.typeORMRepository.save(userData);
     } catch (err) {
       console.error(err);
+      await sendErrorToTelegram(err);
 
       return null;
     }
@@ -33,6 +35,7 @@ export class UserRepository {
         .execute();
     } catch (err) {
       console.error(err);
+      await sendErrorToTelegram(err);
 
       return null;
     }
@@ -45,6 +48,7 @@ export class UserRepository {
       return await this.typeORMRepository.findOne({ where: { email } });
     } catch (err) {
       console.error(err);
+      await sendErrorToTelegram(err);
 
       return null;
     }
@@ -62,6 +66,7 @@ export class UserRepository {
         .execute();
     } catch (err) {
       console.error(err);
+      await sendErrorToTelegram(err);
 
       return null;
     }
