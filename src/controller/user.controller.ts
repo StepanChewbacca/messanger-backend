@@ -4,8 +4,7 @@ import {
   additionalInfoValidation, emailValidation, passwordValidation,
   queryTokenValidation, signValidation,
 } from '../middlewares/validation/user.validator';
-import { userRepository } from '../repository/user.repository';
-import { checkValidToken, getUserEmailFromToken } from '../services/checkToken';
+import { checkValidToken } from '../services/checkToken';
 import { userServices } from '../services/user.services/user.service';
 
 const { JWT_SIGN_UP_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
@@ -21,10 +20,7 @@ class UserController {
     const { result, error: servicesError } = await userServices.createUser(value);
 
     if (servicesError) {
-      return next({
-        data: servicesError.data,
-        status: servicesError.status,
-      });
+      return next({ data: servicesError.data, status: servicesError.status });
     }
 
     res.status(httpConstants.HTTP_STATUS_OK).send(result);
@@ -50,15 +46,11 @@ class UserController {
 
     if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const userEmail = await getUserEmailFromToken(req.headers.token as string, JWT_SIGN_UP_KEY);
+    const { result, error: serviceError } = await userServices.addInfoUser(value, req.headers.token as string);
 
-    if (!userEmail) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
+    if (serviceError) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const user = await userRepository.addInfoUser(value, userEmail);
-
-    if (!user) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
-
-    res.status(httpConstants.HTTP_STATUS_OK).send(user);
+    res.status(httpConstants.HTTP_STATUS_OK).send(result);
   }
 
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {

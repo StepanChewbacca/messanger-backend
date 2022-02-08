@@ -7,7 +7,7 @@ const {
 } = process.env;
 
 export const hosts = {
-  HOST: `${HOST_FOR_ROUTES}:`,
+  HOST: `${HOST_FOR_ROUTES}`,
   HTTP: 'http://',
   HTTPS: 'https://',
 };
