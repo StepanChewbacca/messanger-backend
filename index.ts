@@ -11,7 +11,7 @@ createConnection().then(async () => {
 
   app.use(express.json());
 
-  app.use('/user', router);
+  app.use('/', router);
 
   app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
     res.status(error.status);

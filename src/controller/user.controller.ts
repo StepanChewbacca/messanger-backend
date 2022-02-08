@@ -32,8 +32,6 @@ class UserController {
 
     const isValidToken = await checkValidToken(value.token, JWT_SIGN_UP_KEY);
 
-    console.log(isValidToken);
-
     if (isValidToken) {
       res.setHeader('token', value.token);
       res.redirect('http://www.stepanchewbacca.pp.ua/images/download/9');

@@ -4,10 +4,11 @@ import { routes } from '../constants/routes';
 
 export const router = Router();
 
-router.post(routes.SIGN_UP, userController.createUser);
-router.get(routes.CONFIRM_EMAIL, userController.confirmEmail);
-router.post(routes.ACCEPT_INVITATION, userController.addInfoUser);
-router.post(routes.SIGN_IN, userController.signIn);
-router.post(routes.FORGOT_PASSWORD, userController.forgotPassword);
-router.get(routes.FORGOT_PASSWORD, userController.confirmChangePassword);
-router.post(routes.CHANGE_PASSWORD, userController.changePassword);
+router.use('/user', router)
+  .post(routes.SIGN_UP, userController.createUser)
+  .get(routes.CONFIRM_EMAIL, userController.confirmEmail)
+  .post(routes.ACCEPT_INVITATION, userController.addInfoUser)
+  .post(routes.SIGN_IN, userController.signIn)
+  .post(routes.FORGOT_PASSWORD, userController.forgotPassword)
+  .get(routes.FORGOT_PASSWORD, userController.confirmChangePassword)
+  .post(routes.CHANGE_PASSWORD, userController.changePassword);

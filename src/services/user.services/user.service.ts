@@ -35,10 +35,6 @@ class UserServices {
 
     const password = await compare(value.password, user.password);
 
-    console.log(password);
-
-    console.log(user.activated_at);
-
     if (!user.activated_at || !password) return { error: { data: 'Invalid User', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
     const token = generateSignInToken(user.email);

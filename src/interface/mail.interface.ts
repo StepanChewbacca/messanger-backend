@@ -1,3 +1,3 @@
 export interface ILinkInEmail {
-    linkInEmail: string
+    linkInEmail: string;
 }

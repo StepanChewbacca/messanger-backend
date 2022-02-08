@@ -1,12 +1,13 @@
 import dotenv from 'dotenv';
 import sendGrid from '@sendgrid/mail';
+import axios from 'axios';
 import { routes } from '../constants/routes';
 import { mailerText } from '../constants/mailer';
 
 dotenv.config();
 
 const {
-  SG_API_KEY, HOST, PORT, EMAIL_FROM,
+  SG_API_KEY, HOST, PORT, EMAIL_FROM, BOT_TOKEN, CHAT_ID,
 } = process.env;
 
 sendGrid.setApiKey(SG_API_KEY);
@@ -39,6 +40,11 @@ export const sendMail = async (email: string, token: string, routeForMail: strin
     return null;
   } catch (error) {
     console.error(error);
+    const url = encodeURI(
+      `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${error}`,
+    );
+
+    await axios.get(url);
 
     return null;
   }

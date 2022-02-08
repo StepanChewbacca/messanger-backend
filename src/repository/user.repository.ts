@@ -52,8 +52,6 @@ export class UserRepository {
 
   changePassword = async (newPassword: IUser['password'], email: string): Promise<UpdateResult> => {
     try {
-      console.log(newPassword, 'jopa');
-      console.log(email);
       this.typeORMRepository = getRepository(UserEntity);
 
       return await this.typeORMRepository.createQueryBuilder().update(UserEntity).set({

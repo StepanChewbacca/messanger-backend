@@ -60,7 +60,7 @@ module.exports = {
     'jest/no-identical-title': 'error',
     'jest/prefer-to-have-length': 'warn',
     'jest/valid-expect': 'error',
-    'no-console': 0,
+    'no-console': 2,
     'operator-linebreak': ['error', 'before'],
     'brace-style': [2, '1tbs'],
     'padding-line-between-statements': [
