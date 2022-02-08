@@ -7,10 +7,15 @@ export const mailerText = {
 
 export enum EmailTextEnum {
   CONFIRM_EMAIL='Hi! please confirm your email, click on this link',
-  FORGOT_PASSWORD = 'forgot bla',
+  FORGOT_PASSWORD = 'Hi! please confirm your email, click on this link',
 }
 
-export const mailerRoutes = { // enum
+export const mailerRoutes = {
   [routes.CONFIRM_EMAIL]: mailerText.SIGN_UP_TEXT,
   [routes.FORGOT_PASSWORD]: mailerText.FORGOT_PASSWORD_TEXT,
 };
+
+export enum EmailSubjectEnum {
+  CONFIRM_EMAIL='Email Verification',
+  FORGOT_PASSWORD = 'Forgot password verification ',
+}

@@ -22,8 +22,8 @@ class UserController {
 
     if (servicesError) {
       return next({
-        data: 'Email was not sent',
-        status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR,
+        data: servicesError.data,
+        status: servicesError.status,
       });
     }
 
@@ -48,7 +48,7 @@ class UserController {
   async addInfoUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
+    if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
     const userEmail = await getUserEmailFromToken(req.headers.token as string, JWT_SIGN_UP_KEY);
 
@@ -64,13 +64,13 @@ class UserController {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = signValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
+    if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const token = await userServices.signIn(value);
+    const { result, error: servicesError } = await userServices.signIn(value);
 
-    if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
+    if (servicesError) return next({ data: servicesError.data, status: servicesError.status });
 
-    res.status(httpConstants.HTTP_STATUS_OK).send(token);
+    res.status(httpConstants.HTTP_STATUS_OK).send(result);
   }
 
   async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -78,11 +78,11 @@ class UserController {
 
     if (error) return next({ data: 'Invalid email', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const token = await userServices.forgotPassword(value);
+    const { result, error: serviceError } = await userServices.forgotPassword(value);
 
-    if (!token) return next({ data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR });
+    if (serviceError) return next({ data: serviceError.data, status: serviceError.status });
 
-    res.status(httpConstants.HTTP_STATUS_OK).send(token);
+    res.status(httpConstants.HTTP_STATUS_OK).send(result);
   }
 
   async confirmChangePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -105,9 +105,9 @@ class UserController {
 
     if (error) return next({ data: error, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const { result, error: changePasswordError } = await userServices.changePassword(value, req.headers.token as string);
+    const { result, error: serviceError } = await userServices.changePassword(value, req.headers.token as string);
 
-    if (changePasswordError) return next({ data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST });
+    if (serviceError) return next({ data: serviceError.data, status: serviceError.status });
 
     res.status(httpConstants.HTTP_STATUS_OK).send(result);
   }

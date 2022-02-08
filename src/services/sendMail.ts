@@ -1,30 +1,25 @@
 import dotenv from 'dotenv';
 import sendGrid from '@sendgrid/mail';
-import axios from 'axios';
-import { routes } from '../constants/routes';
-import { EmailTextEnum, mailerRoutes } from '../constants/mailer';
+import { EmailTextEnum, EmailSubjectEnum } from '../constants/mailer';
 import { sendErrorToTelegram } from './telegramAPI.service';
+import { TEmail } from '../interface/mail.interface';
 
 dotenv.config();
 
 const {
-  SG_API_KEY, HOST, PORT, EMAIL_FROM,
+  SG_API_KEY, EMAIL_FROM,
 } = process.env;
 
 sendGrid.setApiKey(SG_API_KEY);
 
-type bla = {
-  email: string, token: string, link?: string, text?: EmailTextEnum
-};
-
 export const sendMail = async ({
-  email, token, link = '', text = EmailTextEnum.CONFIRM_EMAIL,
-}: bla): Promise<string> => {
+  email, link = '', text = EmailTextEnum.CONFIRM_EMAIL, subject = EmailSubjectEnum.CONFIRM_EMAIL,
+}: TEmail): Promise<string> => {
   try {
     const emailSend = {
       to: email,
       from: EMAIL_FROM,
-      subject: 'Email Verification',
+      subject,
       text,
       html: `<h1> ${text} ${link}</h1>`,
     };

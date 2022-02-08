@@ -1,7 +1,7 @@
 import { constants as httpConstants } from 'http2';
 import { hash, compare } from '../bcrypt';
 import { userRepository } from '../../repository/user.repository';
-import { generateSignUpToken, generateSignInToken, generateForgotPasswordToken } from '../jwt';
+import { generateToken } from '../jwt';
 import { sendMail } from '../sendMail';
 import { IUser, IUserChangePassword } from '../../interface/userInterfaces';
 import { IError, IServiceResult } from '../../interface/error';
@@ -9,10 +9,11 @@ import { ILinkInEmail } from '../../interface/mail.interface';
 import { IToken } from '../../interface/token.interface';
 import { routes } from '../../constants/routes';
 import { getUserEmailFromToken } from '../checkToken';
-import {mailerRoutes} from "../../constants/mailer";
+import { EmailSubjectEnum, EmailTextEnum } from '../../constants/mailer';
+import { hosts } from '../../constants/host';
 
 const {
-  JWT_FORGOT_PASSWORD_KEY,
+  JWT_SIGN_UP_KEY, JWT_SIGN_IN_KEY, JWT_FORGOT_PASSWORD_KEY,
 } = process.env;
 
 class UserServices {
@@ -23,8 +24,14 @@ class UserServices {
 
     if (!user) return { error: { data: 'Internal Error', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
 
-    const token = generateSignUpToken(user.email);
-    const linkInEmail = await sendMail(user.email, token, routes.CONFIRM_EMAIL);
+    const token = generateToken(user.email, JWT_SIGN_UP_KEY);
+    const linkForEmail = `${hosts.HTTP}${hosts.HOST}${routes.USER}${routes.CONFIRM_EMAIL}?token=${token}`;
+    const linkInEmail = await sendMail({
+      email: user.email,
+      link: linkForEmail,
+      text: EmailTextEnum.CONFIRM_EMAIL,
+      subject: EmailSubjectEnum.CONFIRM_EMAIL,
+    });
 
     if (!linkInEmail) return { error: { data: 'Email was not send', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
@@ -45,7 +52,7 @@ class UserServices {
       };
     }
 
-    const token = generateSignInToken(user.email);
+    const token = generateToken(user.email, JWT_SIGN_IN_KEY);
 
     return { result: { token } };
   }
@@ -55,9 +62,16 @@ class UserServices {
 
     if (!user.activated_at) return { error: { data: 'Invalid User', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
-    const token = generateForgotPasswordToken(user.email);
+    const token = generateToken(user.email, JWT_FORGOT_PASSWORD_KEY);
 
-    const linkInEmail = await sendMail(user.email, token, routes.FORGOT_PASSWORD);
+    const linkForEmail = `${hosts.HTTP}${hosts.HOST}${routes.USER}${routes.FORGOT_PASSWORD}?token=${token}`;
+
+    const linkInEmail = await sendMail({
+      email: user.email,
+      link: linkForEmail,
+      text: EmailTextEnum.FORGOT_PASSWORD,
+      subject: EmailSubjectEnum.FORGOT_PASSWORD,
+    });
 
     return { result: { linkInEmail } };
   }
