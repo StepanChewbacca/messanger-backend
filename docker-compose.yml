@@ -11,7 +11,7 @@ services:
     networks:
       - network1
     ports:
-      - "5554:5432"
+      - 5554:5432
 
   main:
     container_name: messanger
@@ -20,5 +20,7 @@ services:
     command:
       npm start
     network_mode: host
+    ports:
+      - 3006:3006
     depends_on:
       - postgres
