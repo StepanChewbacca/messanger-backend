@@ -44,7 +44,7 @@ module.exports = {
     'no-await-in-loop': 0,
     'block-scoped-var': 2,
     'no-plusplus': 0,
-    'max-len': ['error', { code: 131 }],
+    'max-len': ['error', { code: 110 }],
     'no-param-reassign': 0,
     'no-warning-comments': 1,
     'vars-on-top': 2,

@@ -15,12 +15,12 @@ export class ConfigService {
     }
     static getTypeOrmConfig() {
         return {
-            "type": "postgres",
-            "host": "host.docker.internal",
-            "port": 5432,
-            "username": "postgres",
-            "password": "12345678",
-            "database": "postgres",
+            "type": ConfigService.getCustomKey('DATABASE_TYPE'),
+            "host": ConfigService.getCustomKey('DATABASE_HOST'),
+            "port": ConfigService.getCustomKey('DATABASE_PORT'),
+            "username": ConfigService.getCustomKey('DATABASE_USERNAME'),
+            "password": ConfigService.getCustomKey('DATABASE_PASSWORD'),
+            "database": ConfigService.getCustomKey('DATABASE_NAME'),
             "entities": ["src/entity/*.ts"],
             "logging": true,
             "synchronize": true

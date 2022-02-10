@@ -1,13 +1,7 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const {
-  HOST_FOR_ROUTES,
-} = process.env;
+import { ConfigService } from './../config/config';
 
 export const hosts = {
-  HOST: `${HOST_FOR_ROUTES}`,
+  HOST: `${ConfigService.getCustomKey('HOST_FOR_ROUTES')}`,
   HTTP: 'http://',
   HTTPS: 'https://',
 };

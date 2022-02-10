@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { constants as httpConstants } from 'http2';
-import { ConfigService } from 'src/config/config';
+import { ConfigService } from '../config/config';
 import {
   additionalInfoValidation, emailValidation, passwordValidation,
   queryTokenValidation, signValidation,

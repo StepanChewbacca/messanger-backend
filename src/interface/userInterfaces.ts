@@ -1,3 +1,4 @@
+import { UserEntity } from 'src/entity/user.entity';
 import { UpdateResult } from 'typeorm';
 
 export interface IUser {

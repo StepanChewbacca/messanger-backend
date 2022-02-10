@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import sendGrid from '@sendgrid/mail';
-import { EmailTextEnum, EmailSubjectEnum } from '../constants/mailer';
+import { EmailTextEnum, EmailSubjectEnum } from '../enums/sendGrid.enums';
 import { sendErrorToTelegram } from './telegramAPI.service';
 import { TEmail } from '../interface/mail.interface';
 
@@ -30,7 +30,7 @@ export const sendMail = async ({
       return link;
     }
 
-    return null;
+    return null
   } catch (error) {
     console.error(error);
     await sendErrorToTelegram(error);

@@ -1,7 +1,7 @@
 import { EmailSubjectEnum, EmailTextEnum } from '../constants/mailer';
 
 export interface ILinkInEmail {
-    linkInEmail: string;
+    linkForEmail: string;
 }
 
 export type TEmail = {

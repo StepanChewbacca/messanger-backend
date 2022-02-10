@@ -5,7 +5,7 @@ export const checkValidToken = async (token: string, JWT_SECRET_KEY: string): Pr
   const decodedToken = decodeToken(token, JWT_SECRET_KEY);
 
   if (!decodedToken) return false;
-  const user = await userRepository.getUserByEmail(decodedToken);
+  const { user } = await userRepository.getUserByEmail(decodedToken);
 
   if (!user) return false;
 
