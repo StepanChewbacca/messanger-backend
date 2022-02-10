@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { constants as httpConstants } from 'http2';
+import { ConfigService } from 'src/config/config';
 import {
   additionalInfoValidation, emailValidation, passwordValidation,
   queryTokenValidation, signValidation,
 } from '../middlewares/validation/user.validator';
 import { checkValidToken } from '../services/checkToken';
 import { userServices } from '../services/user.services/user.service';
-
-const { JWT_SIGN_UP_KEY, JWT_FORGOT_PASSWORD_KEY } = process.env;
 
 class UserController {
   async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -31,7 +30,7 @@ class UserController {
 
     if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const isValidToken = await checkValidToken(value.token, JWT_SIGN_UP_KEY);
+    const isValidToken = await checkValidToken(value.token, ConfigService.getCustomKey('JWT_SIGN_UP_KEY'));
 
     if (isValidToken) {
       res.setHeader('token', value.token);
@@ -82,7 +81,7 @@ class UserController {
 
     if (error) return next({ data: error.details[0].message, status: httpConstants.HTTP_STATUS_BAD_REQUEST });
 
-    const isValidToken = await checkValidToken(value.token, JWT_FORGOT_PASSWORD_KEY);
+    const isValidToken = await checkValidToken(value.token, ConfigService.getCustomKey('JWT_FORGOT_PASSWORD_KEY'));
 
     if (isValidToken) {
       res.setHeader('token', value.token);

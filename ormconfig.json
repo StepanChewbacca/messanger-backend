@@ -1,12 +1,13 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "host.docker.internal",
   "port": 5432,
-  "username": "chewie",
+  "username": "postgres",
   "password": "12345678",
   "database": "postgres",
-  "entities": ["src/entity/*.ts"],
+  "entities": [
+    "src/entity/*.ts"
+  ],
   "logging": true,
   "synchronize": true
 }
-

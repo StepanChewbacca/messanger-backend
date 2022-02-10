@@ -19,7 +19,7 @@ services:
     build: .
     command:
       npm start
-    network_mode: host
+    network_mode: network1
     ports:
       - 3006:3006
     depends_on:
