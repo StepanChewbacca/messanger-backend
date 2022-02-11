@@ -1,7 +1,7 @@
-import { EmailSubjectEnum, EmailTextEnum } from '../constants/mailer';
+import { EmailSubjectEnum, EmailTextEnum } from '../enums/sendGrid.enums';
 
-export interface ILinkInEmail {
-    linkForEmail: string;
+export interface ILinkForEmail {
+    link: string;
 }
 
 export type TEmail = {

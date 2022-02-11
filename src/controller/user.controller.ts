@@ -34,9 +34,9 @@ class UserController {
 
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://www.stepanchewbacca.pp.ua/images/download/9');
+      res.redirect('http://127.0.0.1:3006/api/user/accept-invitation');
     } else {
-      res.redirect('https://www.google.com');
+      res.redirect('http://127.0.0.1:3006/api/user/error');
     }
   }
 
@@ -85,9 +85,9 @@ class UserController {
 
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://www.stepanchewbacca.pp.ua/images/download/9');
+      res.redirect('http://www.stepanchewbacca.pp.ua/api/user/change-password');
     } else {
-      res.redirect('https://www.google.com');
+      res.redirect('http://www.stepanchewbacca.pp.ua/api/user/error');
     }
   }
 

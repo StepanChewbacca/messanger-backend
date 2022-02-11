@@ -1,18 +1,16 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { createConnection } from 'typeorm/globals';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { router } from './src/router/router';
 import { IError } from './src/interface/error';
-import cors from 'cors';
-import * as fs from 'fs';
-import { ConfigService } from './src/config/config';
 
 dotenv.config();
 
 createConnection().then(async () => {
   const app = express();
 
-  app.use(cors())
+  app.use(cors());
 
   app.use(express.json());
 

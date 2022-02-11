@@ -56,5 +56,5 @@ export class UserEntity implements IUser {
       default: () => "'[]'",
       nullable: false,
     })
-    public session: Array<{ session_id: number, expired_at: Date }> = [];
+    session: Array<{ session_id: number, expired_at: Date }> = [];
 }

@@ -1,27 +1,28 @@
 import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
 import { IUser } from '../interface/userInterfaces';
-import { IError, IServiceResult, IUpdateUserRepositoryResult, IUserRepositoryResult } from '../interface/error';
+import { IUserRepositoryResult } from '../interface/error';
 import { sendErrorToTelegram } from '../services/telegramAPI.service';
 
 export class UserRepository {
   typeORMRepository: Repository<UserEntity>;
 
-  async createUser(userData: IUser): Promise<IUserRepositoryResult<IUser , Error>> {
+  async createUser(userData: IUser): Promise<IUserRepositoryResult<IUser, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
       const user = await this.typeORMRepository.save(userData);
-      return { user }
+
+      return { user };
     } catch (error) {
-      console.error(error)
+      console.error(error);
       await sendErrorToTelegram(error);
 
       return { error };
     }
   }
 
-  async addInfoUser(userAdditionalInfo: IUser, email: string): Promise<IUpdateUserRepositoryResult<IUser , Error>> {
+  async addInfoUser(userAdditionalInfo: IUser, email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
@@ -36,7 +37,7 @@ export class UserRepository {
         .returning('*')
         .execute();
 
-      return { user }
+      return { user };
     } catch (error) {
       console.error(error);
       await sendErrorToTelegram(error);
@@ -45,21 +46,22 @@ export class UserRepository {
     }
   }
 
-  async getUserByEmail(email: IUser['email']): Promise<IUserRepositoryResult<IUser , Error>> {
+  async getUserByEmail(email: IUser['email']): Promise<IUserRepositoryResult<IUser, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
       const user = await this.typeORMRepository.findOne({ where: { email } });
-      return {user}
+
+      return { user };
     } catch (error) {
       console.error(error);
       await sendErrorToTelegram(error);
 
-      return {error};
+      return { error };
     }
   }
 
-  changePassword = async (newPassword: IUser['password'], email: string): Promise<IUpdateUserRepositoryResult<IUser , Error>> => {
+  changePassword = async (newPassword: IUser['password'], email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> => {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
@@ -69,12 +71,13 @@ export class UserRepository {
         .where('email = :email', { email })
         .returning('*')
         .execute();
-      return {user}
+
+      return { user };
     } catch (error) {
       console.error(error);
       await sendErrorToTelegram(error);
 
-      return {error};
+      return { error };
     }
   };
 }
