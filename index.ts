@@ -1,11 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { createConnection } from 'typeorm/globals';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import { router } from './src/router/router';
 import { IError } from './src/interface/error';
-
-dotenv.config();
+import { ConfigService } from './src/config/config';
 
 createConnection().then(async () => {
   const app = express();
@@ -21,7 +19,7 @@ createConnection().then(async () => {
     res.send(error);
   });
 
-  app.listen(process.env.PORT, () => {
-    console.log(`App listen port: ${(process.env.PORT)}`);
+  app.listen(ConfigService.getCustomKey('PORT'), () => {
+    console.log(`App listen port: ${ConfigService.getCustomKey('PORT')}`);
   });
 });
