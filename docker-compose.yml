@@ -13,7 +13,7 @@ services:
     networks:
       - network1
     ports:
-      - ${POSTGRES_PORT_LEFT}:${POSTGRES_PORT_RIGHT}
+      - ${POSTGRES_PORT}:5432
 
   main:
     container_name: messanger
