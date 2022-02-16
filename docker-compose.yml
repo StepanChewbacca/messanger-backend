@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  network1:
+    external: true
+
+services:
+  postgres:
+    container_name: postgres
+    env_file:
+      - .env
+    image: postgres:12
+    networks:
+      - network1
+    ports:
+      - ${POSTGRES_PORT}:5432
+
+  main:
+    container_name: messanger
+    env_file:
+      - .env
+    restart: always
+    build: .
+    command:
+      npm start
+    network_mode: network1
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
