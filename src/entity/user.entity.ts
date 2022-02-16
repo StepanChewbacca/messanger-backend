@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IUser } from '../interface/userInterfaces';
-import {UserGenderEnum} from "../enums/user.enums";
+import { UserGenderEnum } from '../enums/user.enums';
 
 @Entity()
 export class UserEntity implements IUser {
@@ -12,7 +12,8 @@ export class UserEntity implements IUser {
     })
     email: string;
 
-    @Column()
+    @Column({
+    })
     password: string;
 
     @Column({
@@ -30,10 +31,13 @@ export class UserEntity implements IUser {
     @Column({
       nullable: true,
       default: null,
+      type: 'date',
     })
     date_of_birthday: Date;
 
     @Column({
+      type: 'enum',
+      enum: UserGenderEnum,
       nullable: true,
       default: null,
     })
@@ -42,12 +46,14 @@ export class UserEntity implements IUser {
     @Column({
       nullable: true,
       default: null,
+      type: 'date',
     })
     confirmation_send_at: Date;
 
     @Column({
       nullable: true,
       default: null,
+      type: 'date',
     })
     activated_at: Date;
 

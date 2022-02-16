@@ -7,20 +7,24 @@ networks:
 services:
   postgres:
     container_name: postgres
+    env_file:
+      - .env
     image: postgres:12
     networks:
       - network1
     ports:
-      - 5554:5432
+      - ${POSTGRES_PORT_LEFT}:${POSTGRES_PORT_RIGHT}
 
   main:
     container_name: messanger
+    env_file:
+      - .env
     restart: always
     build: .
     command:
       npm start
     network_mode: network1
     ports:
-      - 3006:3006
+      - ${PORT}:${PORT}
     depends_on:
       - postgres

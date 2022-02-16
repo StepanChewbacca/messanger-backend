@@ -2,7 +2,7 @@ import { constants as httpConstants } from 'http2';
 import { hash, compare } from '../bcrypt.service';
 import { userRepository } from '../../repository/user.repository';
 import { generateToken } from '../jwt';
-import { sendGridMailer } from '../sendGrid.service';
+import { nodeMailer } from '../sendGrid.service';
 import { IUpdateResultUser, IUser } from '../../interface/userInterfaces';
 import { IError, IServiceResult } from '../../interface/error';
 import { ILinkForEmail } from '../../interface/mail.interface';
@@ -23,14 +23,14 @@ class UserServices {
 
     const token = generateToken(user.email, ConfigService.getCustomKey('JWT_SIGN_UP_KEY'));
     const linkForEmail = `${hosts.HTTP}${hosts.HOST}${routes.USER}${routes.CONFIRM_EMAIL}?token=${token}`;
-    const { result, error: mailerError } = await sendGridMailer.sendMail({
+    const { result, error: mailerError } = await nodeMailer.sendMail({
       email: user.email,
       link: linkForEmail,
       text: EmailTextEnum.CONFIRM_EMAIL,
       subject: EmailSubjectEnum.CONFIRM_EMAIL,
     });
 
-    if (mailerError) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
+    if (mailerError) return { error: { data: 'Email was not sent', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
     return { result };
   }
@@ -81,7 +81,7 @@ class UserServices {
 
     const linkForEmail = `${hosts.HTTP}${hosts.HOST}${routes.USER}${routes.FORGOT_PASSWORD}?token=${token}`;
 
-    const { result, error: mailerError } = await sendGridMailer.sendMail({
+    const { result, error: mailerError } = await nodeMailer.sendMail({
       email: user.email,
       link: linkForEmail,
       text: EmailTextEnum.FORGOT_PASSWORD,
