@@ -8,21 +8,25 @@ export class UserEntity implements IUser {
     id: number;
 
     @Column({
+      type: 'text',
       unique: true,
     })
     email: string;
 
     @Column({
+      type: 'text',
     })
     password: string;
 
     @Column({
       nullable: true,
       default: null,
+      type: 'text',
     })
     first_name: string;
 
     @Column({
+      type: 'text',
       nullable: true,
       default: null,
     })
