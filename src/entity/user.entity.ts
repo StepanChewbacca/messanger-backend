@@ -35,7 +35,7 @@ export class UserEntity implements IUser {
     @Column({
       nullable: true,
       default: null,
-      type: 'date',
+      type: 'timestamptz',
     })
     date_of_birthday: Date;
 
@@ -50,14 +50,14 @@ export class UserEntity implements IUser {
     @Column({
       nullable: true,
       default: null,
-      type: 'date',
+      type: 'timestamptz',
     })
     confirmation_send_at: Date;
 
     @Column({
       nullable: true,
       default: null,
-      type: 'date',
+      type: 'timestamptz',
     })
     activated_at: Date;
 
