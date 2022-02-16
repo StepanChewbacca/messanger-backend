@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { regex } from '../../constants/regex';
+import { UserGenderEnum } from '../../enums/user.enums';
 
 export const signValidation = Joi.object().keys({
   email: Joi.string().min(5).regex(regex.EMAIL).required(),
@@ -14,7 +15,7 @@ export const additionalInfoValidation = Joi.object().keys({
   first_name: Joi.string().min(2).required(),
   last_name: Joi.string().min(2).required(),
   date_of_birthday: Joi.date().required(),
-  gender: Joi.string().min(2).required(),
+  gender: Joi.string().min(2).valid(UserGenderEnum.MALE, UserGenderEnum.FEMALE).required(),
 });
 
 export const emailValidation = Joi.object().keys({

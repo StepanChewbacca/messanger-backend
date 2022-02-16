@@ -4,7 +4,7 @@ import { routes } from '../constants/routes';
 
 export const router = Router();
 
-router.use('/user', router)
+router.use(routes.USER, router)
   .post(routes.SIGN_UP, userController.createUser)
   .get(routes.CONFIRM_EMAIL, userController.confirmEmail)
   .post(routes.ACCEPT_INVITATION, userController.addInfoUser)

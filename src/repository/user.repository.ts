@@ -61,7 +61,7 @@ export class UserRepository {
     }
   }
 
-  changePassword = async (newPassword: IUser['password'], email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> => {
+  async changePassword(newPassword: IUser['password'], email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
@@ -79,7 +79,7 @@ export class UserRepository {
 
       return { error };
     }
-  };
+  }
 }
 
 export const userRepository = new UserRepository();

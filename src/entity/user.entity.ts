@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { IUser } from '../interface/userInterfaces';
+import {UserGenderEnum} from "../enums/user.enums";
 
 @Entity()
 export class UserEntity implements IUser {
@@ -36,7 +37,7 @@ export class UserEntity implements IUser {
       nullable: true,
       default: null,
     })
-    gender: string;
+    gender: UserGenderEnum;
 
     @Column({
       nullable: true,

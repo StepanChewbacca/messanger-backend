@@ -7,6 +7,8 @@ import {
 } from '../middlewares/validation/user.validator';
 import { checkValidToken } from '../services/checkToken';
 import { userServices } from '../services/user.services/user.service';
+import { hosts } from '../constants/host';
+import { routes } from '../constants/routes';
 
 class UserController {
   async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -34,9 +36,9 @@ class UserController {
 
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://127.0.0.1:3006/api/user/accept-invitation');
+      res.redirect(`${hosts.HTTP}${ConfigService.getCustomKey('DOMAIN_FRONTEND')}${routes.USER}${routes.ACCEPT_INVITATION}`);
     } else {
-      res.redirect('http://127.0.0.1:3006/api/user/error');
+      res.redirect(`${hosts.HTTP}${ConfigService.getCustomKey('DOMAIN_FRONTEND')}${routes.USER}${routes.ERROR}`);
     }
   }
 
@@ -85,9 +87,9 @@ class UserController {
 
     if (isValidToken) {
       res.setHeader('token', value.token);
-      res.redirect('http://www.stepanchewbacca.pp.ua/api/user/change-password');
+      res.redirect(`${hosts.HTTP}${ConfigService.getCustomKey('DOMAIN_FRONTEND')}${routes.USER}${routes.CHANGE_PASSWORD}`);
     } else {
-      res.redirect('http://www.stepanchewbacca.pp.ua/api/user/error');
+      res.redirect(`${hosts.HTTP}${ConfigService.getCustomKey('DOMAIN_FRONTEND')}${routes.USER}${routes.ERROR}`);
     }
   }
 

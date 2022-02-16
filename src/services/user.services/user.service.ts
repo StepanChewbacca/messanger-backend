@@ -40,7 +40,9 @@ class UserServices {
 
     if (error) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
 
-    const password = await compare(value.password, user.password);
+    const { result: password, error: compareError } = await compare(value.password, user.password);
+
+    if (compareError) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
 
     if (!user.activated_at || !password) {
       return {
