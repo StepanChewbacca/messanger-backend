@@ -2,7 +2,7 @@ import { constants as httpConstants } from 'http2';
 import { hash, compare } from '../bcrypt.service';
 import { userRepository } from '../../repository/user.repository';
 import { generateToken } from '../jwt';
-import { nodeMailer } from '../sendGrid.service';
+import { nodeMailer } from '../nodeMailer.service';
 import { IUpdateResultUser, IUser } from '../../interface/userInterfaces';
 import { IError, IServiceResult } from '../../interface/error';
 import { ILinkForEmail } from '../../interface/mail.interface';
