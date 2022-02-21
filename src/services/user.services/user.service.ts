@@ -14,7 +14,7 @@ import { hosts } from '../../constants/host';
 import { ConfigService } from '../../config/config';
 
 class UserServices {
-  async createUser(value: IUser): Promise<IServiceResult<ILinkForEmail, IError>> {
+  async createUser(value: IUser): Promise<IServiceResult<string, IError>> {
     value.password = await hash(value.password);
 
     const { user, error } = await userRepository.createUser(value);
@@ -63,14 +63,14 @@ class UserServices {
 
     if (!userEmail) return { error: { data: 'Invalid token', status: httpConstants.HTTP_STATUS_NOT_FOUND } };
 
-    const { user, error } = await userRepository.addInfoUser(value, userEmail);
+    const { user, error } = await userRepository.addInfoUser(value, userEmail.result.email);
 
     if (!user) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_NOT_FOUND } };
 
     return { result: { user } };
   }
 
-  async forgotPassword(value: IUser): Promise<IServiceResult<ILinkForEmail, IError>> {
+  async forgotPassword(value: IUser): Promise<IServiceResult<string, IError>> {
     const { user, error } = await userRepository.getUserByEmail(value.email);
 
     if (error) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
@@ -96,7 +96,10 @@ class UserServices {
   async changePassword(value: IUser, token: string): Promise<IServiceResult<IUpdateResultUser, IError>> {
     value.password = await hash(value.password);
     const userEmail = await getUserEmailFromToken(token as string, ConfigService.getCustomKey('JWT_FORGOT_PASSWORD_KEY'));
-    const { user, error } = await userRepository.changePassword(value.password, userEmail);
+
+    if (!userEmail.result.email) return { error: { data: 'Invalid token', status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
+
+    const { user, error } = await userRepository.changePassword(value.password, userEmail.result.email);
 
     if (error) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 

@@ -21,7 +21,7 @@ export class UserRepository {
     }
   }
 
-  async addInfoUser(userAdditionalInfo: IUser, email: IServiceResult<IUser, Error>): Promise<IUserRepositoryResult<UpdateResult, Error>> {
+  async addInfoUser(userAdditionalInfo: IUser, email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 
@@ -60,7 +60,7 @@ export class UserRepository {
     }
   }
 
-  async changePassword(newPassword: IUser['password'], email: IServiceResult<IUser, Error>): Promise<IUserRepositoryResult<UpdateResult, Error>> {
+  async changePassword(newPassword: IUser['password'], email: string): Promise<IUserRepositoryResult<UpdateResult, Error>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
 

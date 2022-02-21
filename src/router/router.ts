@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { userController } from '../controller/user.controller';
 import { routes } from '../constants/routes';
+import { chatController } from '../controller/chat.controller';
 
 export const router = Router();
 
@@ -12,3 +13,7 @@ router.use(routes.USER, router)
   .post(routes.FORGOT_PASSWORD, userController.forgotPassword)
   .get(routes.FORGOT_PASSWORD, userController.confirmChangePassword)
   .post(routes.CHANGE_PASSWORD, userController.changePassword);
+
+router.use(routes.CHAT, router)
+  .post(routes.ADD_USER_TO_CHAT, chatController.addUserToChat)
+  .post(routes.CREATE_CHAT, chatController.createChat);

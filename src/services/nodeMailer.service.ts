@@ -8,7 +8,7 @@ import { IServiceResult } from '../interface/error';
 export class NodeMailer {
   async sendMail({
     email, link = '', text = EmailTextEnum.CONFIRM_EMAIL, subject = EmailSubjectEnum.CONFIRM_EMAIL,
-  }: TEmail): Promise<IServiceResult<ILinkForEmail, Error>> {
+  }: TEmail): Promise<IServiceResult<string, Error>> {
     try {
       const transporter = nodemailer.createTransport({
         host: 'smtp.mail.ru',
@@ -28,7 +28,7 @@ export class NodeMailer {
         html: `<h1> ${text} ${link}</h1>`,
       });
 
-      return null;
+      return { result: link };
     } catch (error) {
       console.log();
       await sendErrorToTelegram(error);
