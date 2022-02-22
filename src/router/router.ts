@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { userController } from '../controller/user.controller';
 import { routes } from '../constants/routes';
 import { chatController } from '../controller/chat.controller';
+import { messageController } from '../controller/message.controller';
 
 export const router = Router();
 
@@ -17,3 +18,7 @@ router.use(routes.USER, router)
 router.use(routes.CHAT, router)
   .post(routes.ADD_USER_TO_CHAT, chatController.addUserToChat)
   .post(routes.CREATE_CHAT, chatController.createChat);
+
+router.use(routes.MESSAGES, router)
+  .post(routes.CREATE_MESSAGE, messageController.create)
+  .get(routes.GET_MESSAGES, messageController.get);

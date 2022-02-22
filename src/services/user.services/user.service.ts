@@ -38,6 +38,8 @@ class UserServices {
   async signIn(value: IUser): Promise<IServiceResult<IToken, IError>> {
     const { user, error } = await userRepository.getUserByEmail(value.email);
 
+    if (!user) return { error: { data: 'Invalid user', status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
+
     if (error) return { error: { data: error.message, status: httpConstants.HTTP_STATUS_INTERNAL_SERVER_ERROR } };
 
     const { result: password, error: compareError } = await compare(value.password, user.password);

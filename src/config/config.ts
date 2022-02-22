@@ -22,7 +22,7 @@ export class ConfigService {
       password: ConfigService.getCustomKey('DATABASE_PASSWORD'),
       database: ConfigService.getCustomKey('DATABASE_NAME'),
       entities: ['src/entity/*.ts'],
-      logging: true,
+      logging: false,
       synchronize: true,
     };
   }

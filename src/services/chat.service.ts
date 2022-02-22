@@ -23,7 +23,7 @@ class ChatServices {
 
     const { result: decodeInfo, error: decodeError } = await decodeToken<IUser>(headers.token, ConfigService.getCustomKey('JWT_SIGN_IN_KEY'));
 
-    if (decodeError) return { error: { data: DBError.data, status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
+    if (decodeError) return { error: { data: decodeError.message, status: httpConstants.HTTP_STATUS_BAD_REQUEST } };
 
     const { user, error: userError } = await userRepository.getUserByEmail(decodeInfo.email);
 

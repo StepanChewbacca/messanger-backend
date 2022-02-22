@@ -34,6 +34,23 @@ export class ChatRepository {
         return { error };
       }
     }
+
+    async getUserInChat(user_id: number, chat_id: number): Promise<IServiceResult<ChatEntity, IError>> {
+      try {
+        this.typeORMRepository = getRepository(ChatEntity);
+        const result = await this.typeORMRepository
+          .createQueryBuilder('chat')
+          .leftJoin('chat.users', 'users')
+          .where(`users.id = ${user_id} and chat.id = ${chat_id}`)
+          .getOne();
+
+        return { result };
+      } catch (error) {
+        await sendErrorToTelegram(error);
+
+        return { error };
+      }
+    }
 }
 
 export const chatRepository = new ChatRepository();

@@ -2,6 +2,7 @@ export const routes = {
   API: '/api',
   USER: '/user',
   CHAT: '/chat',
+  MESSAGES: '/messages',
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
   ACCEPT_INVITATION: '/accept-invitation',
@@ -11,4 +12,6 @@ export const routes = {
   ERROR: '/error',
   ADD_USER_TO_CHAT: '/add-user-to-chat',
   CREATE_CHAT: '/create-chat',
+  CREATE_MESSAGE: '/create-message',
+  GET_MESSAGES: '/get-messages',
 };
