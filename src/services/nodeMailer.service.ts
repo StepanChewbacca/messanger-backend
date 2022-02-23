@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
 import { EmailTextEnum, EmailSubjectEnum } from '../enums/sendGrid.enums';
 import { sendErrorToTelegram } from './telegramAPI.service';
-import { ILinkForEmail, TEmail } from '../interface/mail.interface';
 import { ConfigService } from '../config/config';
-import { IServiceResult } from '../interface/error';
+import { IServiceResult } from '../interface/returns.interface';
+import { TEmail } from '../interface/mail.interface';
 
 export class NodeMailer {
   async sendMail({

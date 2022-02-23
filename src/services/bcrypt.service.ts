@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { ConfigService } from '../config/config';
-import { IServiceResult } from '../interface/error';
+import { IServiceResult } from '../interface/returns.interface';
 
 export const hash = (password: string): Promise<string> => bcrypt.hash(password, +ConfigService.getCustomKey('SALT_BCRYPT'));
 

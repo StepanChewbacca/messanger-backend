@@ -1,8 +1,9 @@
-import { getRepository, Repository, UpdateResult } from 'typeorm';
-import { IError, IServiceResult } from '../interface/error';
+import { getRepository, Repository } from 'typeorm';
+import { IError, IServiceResult } from '../interface/returns.interface';
 import { sendErrorToTelegram } from '../services/telegramAPI.service';
 import { ChatEntity } from '../entity/chat.entity';
-import { IChat } from '../interface/chat.interface';
+import { IChat, IChatQuery, IReturnResultArrayAndCount } from '../interface/chat.interface';
+import { IUser } from '../interface/user.interfaces';
 
 export class ChatRepository {
     typeORMRepository: Repository<ChatEntity>;
@@ -48,6 +49,24 @@ export class ChatRepository {
       } catch (error) {
         await sendErrorToTelegram(error);
 
+        return { error };
+      }
+    }
+
+    async get(query: IChatQuery, user: IUser): Promise<IServiceResult<IReturnResultArrayAndCount, Error>> {
+      try {
+        this.typeORMRepository = getRepository(ChatEntity);
+        const result = await this.typeORMRepository
+          .createQueryBuilder('room')
+          .leftJoin('room.users', 'users')
+          .where(`users.id = ${user.id}`)
+          .andWhere('room.name like :name', { name: `%${query.name}%` })
+          .offset((query.page - 1) * query.perPage)
+          .limit(query.perPage)
+          .getMany();
+
+        return { result: { data: result, count: result.length } };
+      } catch (error) {
         return { error };
       }
     }

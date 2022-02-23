@@ -1,7 +1,7 @@
 import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
-import { IUser } from '../interface/userInterfaces';
-import { IServiceResult, IUserRepositoryResult } from '../interface/error';
+import { IUser } from '../interface/user.interfaces';
+import { IUserRepositoryResult } from '../interface/returns.interface';
 import { sendErrorToTelegram } from '../services/telegramAPI.service';
 
 export class UserRepository {

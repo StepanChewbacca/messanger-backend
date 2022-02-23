@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { constants as httpConstants } from 'http2';
-import {chatNameValidation, userIdChatIdValidation} from '../middlewares/validation/chat.validation';
+import {
+  chatNameValidation,
+  getChatsValidation,
+  userIdChatIdValidation,
+} from '../middlewares/validation/chat.validation';
 import { chatServices } from '../services/chat.service';
 
 class ChatController {
@@ -30,6 +34,18 @@ class ChatController {
     if (error) return next({ data: error.data, status: error.status });
 
     res.status(httpConstants.HTTP_STATUS_CREATED).send(result);
+  }
+
+  async get(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { value, error: validationError } = getChatsValidation.validate(req.query, { abortEarly: false });
+
+    if (validationError) return next({ data: validationError, status: 400 });
+
+    const { result, error } = await chatServices.get(value, req.headers);
+
+    if (error) return next({ data: error.data, status: 500 });
+
+    res.status(result.status).send(result);
   }
 }
 

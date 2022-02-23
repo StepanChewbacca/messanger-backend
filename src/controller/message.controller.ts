@@ -13,6 +13,8 @@ class MessageController {
 
     if (error) return next({ data: error.data, status: error.status });
 
+    global.io.emit('get message', { result });
+
     res.status(httpConstants.HTTP_STATUS_CREATED).send(result);
   }
 

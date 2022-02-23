@@ -3,6 +3,7 @@ export const routes = {
   USER: '/user',
   CHAT: '/chat',
   MESSAGES: '/messages',
+  GET_CHATS: '/get-chats',
   SIGN_UP: '/sign-up',
   SIGN_IN: '/sign-in',
   ACCEPT_INVITATION: '/accept-invitation',

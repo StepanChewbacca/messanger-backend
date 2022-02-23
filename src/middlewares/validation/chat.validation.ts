@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import { UserGenderEnum } from '../../enums/user.enums';
 
 export const userIdChatIdValidation = Joi.object().keys({
   user_id: Joi.number().min(1).required(),
@@ -8,4 +7,11 @@ export const userIdChatIdValidation = Joi.object().keys({
 
 export const chatNameValidation = Joi.object().keys({
   name: Joi.string().min(1).required(),
+});
+
+export const getChatsValidation = Joi.object().keys({
+  name: Joi.string().default(''),
+  id: Joi.number().positive(),
+  page: Joi.number().positive().default(1),
+  perPage: Joi.number().positive().default(50),
 });

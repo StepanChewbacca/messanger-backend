@@ -17,7 +17,8 @@ router.use(routes.USER, router)
 
 router.use(routes.CHAT, router)
   .post(routes.ADD_USER_TO_CHAT, chatController.addUserToChat)
-  .post(routes.CREATE_CHAT, chatController.createChat);
+  .post(routes.CREATE_CHAT, chatController.createChat)
+  .get(routes.GET_CHATS, chatController.get);
 
 router.use(routes.MESSAGES, router)
   .post(routes.CREATE_MESSAGE, messageController.create)

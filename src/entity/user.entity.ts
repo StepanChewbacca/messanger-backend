@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IUser } from '../interface/userInterfaces';
+import { IUser } from '../interface/user.interfaces';
 import { UserGenderEnum } from '../enums/user.enums';
 
 @Entity()

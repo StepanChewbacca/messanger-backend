@@ -6,7 +6,7 @@ import {
   queryTokenValidation, signValidation,
 } from '../middlewares/validation/user.validator';
 import { checkValidToken } from '../services/checkToken';
-import { userServices } from '../services/user.services/user.service';
+import { userServices } from '../services/user.service';
 import { hosts } from '../constants/host';
 import { routes } from '../constants/routes';
 

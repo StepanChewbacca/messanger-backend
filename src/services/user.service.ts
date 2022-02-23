@@ -1,17 +1,16 @@
 import { constants as httpConstants } from 'http2';
-import { hash, compare } from '../bcrypt.service';
-import { userRepository } from '../../repository/user.repository';
-import { generateToken } from '../jwt';
-import { nodeMailer } from '../nodeMailer.service';
-import { IUpdateResultUser, IUser } from '../../interface/userInterfaces';
-import { IError, IServiceResult } from '../../interface/error';
-import { ILinkForEmail } from '../../interface/mail.interface';
-import { IToken } from '../../interface/token.interface';
-import { routes } from '../../constants/routes';
-import { getUserEmailFromToken } from '../checkToken';
-import { EmailSubjectEnum, EmailTextEnum } from '../../enums/sendGrid.enums';
-import { hosts } from '../../constants/host';
-import { ConfigService } from '../../config/config';
+import { hash, compare } from './bcrypt.service';
+import { userRepository } from '../repository/user.repository';
+import { generateToken } from './jwt';
+import { nodeMailer } from './nodeMailer.service';
+import { IUpdateResultUser, IUser } from '../interface/user.interfaces';
+import { IError, IServiceResult } from '../interface/returns.interface';
+import { IToken } from '../interface/token.interface';
+import { routes } from '../constants/routes';
+import { getUserEmailFromToken } from './checkToken';
+import { EmailSubjectEnum, EmailTextEnum } from '../enums/sendGrid.enums';
+import { hosts } from '../constants/host';
+import { ConfigService } from '../config/config';
 
 class UserServices {
   async createUser(value: IUser): Promise<IServiceResult<string, IError>> {

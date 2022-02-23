@@ -1,8 +1,7 @@
-import { constants as httpConstants } from 'http2';
 import { decodeToken } from './jwt';
 import { userRepository } from '../repository/user.repository';
-import { IUser } from '../interface/userInterfaces';
-import { IServiceResult } from '../interface/error';
+import { IUser } from '../interface/user.interfaces';
+import { IServiceResult } from '../interface/returns.interface';
 
 export const checkValidToken = async (token: string, JWT_SECRET_KEY: string): Promise<boolean> => {
   const { result } = decodeToken<IUser>(token, JWT_SECRET_KEY);

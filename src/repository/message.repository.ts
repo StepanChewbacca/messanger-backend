@@ -1,18 +1,18 @@
-import { getRepository, InsertResult, Repository } from 'typeorm';
-import { IError, IServiceResult, IUserRepositoryResult } from '../interface/error';
+import { getRepository, Repository } from 'typeorm';
+import { IError, IServiceResult } from '../interface/returns.interface';
 import { MessageEntity } from '../entity/message.entity';
 import { UserEntity } from '../entity/user.entity';
-import { ChatEntity } from '../entity/chat.entity';
 import { sendErrorToTelegram } from '../services/telegramAPI.service';
-import { IUser } from '../interface/userInterfaces';
+import { ICreateMessage, IGetMessages } from '../interface/message.interface';
+import { ChatEntity } from '../entity/chat.entity';
 
 export class MessageRepository {
     typeORMRepository: Repository<MessageEntity>;
 
-    async create(value: any, user: UserEntity): Promise<IServiceResult<InsertResult, IError>> {
+    async create(value: ICreateMessage, user: UserEntity): Promise<IServiceResult<ICreateMessage, IError>> {
       try {
         this.typeORMRepository = getRepository(MessageEntity);
-        const result = await this.typeORMRepository.createQueryBuilder('message')
+        await this.typeORMRepository.createQueryBuilder('message')
           .insert()
           .into(MessageEntity)
           .values([
@@ -26,7 +26,7 @@ export class MessageRepository {
           ])
           .execute();
 
-        return { result };
+        return { result: value };
       } catch (error) {
         console.log(error);
 
@@ -34,7 +34,7 @@ export class MessageRepository {
       }
     }
 
-    async getAllByChat(value: any): Promise<IServiceResult<MessageEntity[], Error>> {
+    async getAllByChat(value: IGetMessages): Promise<IServiceResult<MessageEntity[], Error>> {
       try {
         this.typeORMRepository = getRepository(MessageEntity);
 
@@ -45,6 +45,7 @@ export class MessageRepository {
           .where(`chat.id = ${value.chat_id}`)
           .offset((value.page - 1) * value.perPage)
           .limit(value.perPage)
+          .orderBy('message.send_date', 'ASC')
           .getMany();
 
         return { result };
@@ -52,6 +53,26 @@ export class MessageRepository {
         console.error(error);
         await sendErrorToTelegram(error);
 
+        return { error };
+      }
+    }
+
+    async getLastMessageInRoom(room: ChatEntity): Promise<IServiceResult<MessageEntity | ChatEntity, IError>> {
+      try {
+        this.typeORMRepository = getRepository(MessageEntity);
+        const result = await this.typeORMRepository
+          .createQueryBuilder('message')
+          .leftJoinAndSelect('message.room', 'room')
+          .where(`room.id = ${room.id}`)
+          .orderBy('message.send_date', 'DESC')
+          .getMany();
+
+        if (!result[0]) {
+          return { result: room };
+        }
+
+        return { result: result[0] };
+      } catch (error) {
         return { error };
       }
     }
