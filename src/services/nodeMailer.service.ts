@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { EmailTextEnum, EmailSubjectEnum } from '../enums/sendGrid.enums';
+import { EmailTextEnum, EmailSubjectEnum } from '../enums/mailer.enums';
 import { sendErrorToTelegram } from './telegramAPI.service';
 import { ConfigService } from '../config/config';
 import { IServiceResult } from '../interface/returns.interface';

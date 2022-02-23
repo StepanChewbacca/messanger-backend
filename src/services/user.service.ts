@@ -8,7 +8,7 @@ import { IError, IServiceResult } from '../interface/returns.interface';
 import { IToken } from '../interface/token.interface';
 import { routes } from '../constants/routes';
 import { getUserEmailFromToken } from './checkToken';
-import { EmailSubjectEnum, EmailTextEnum } from '../enums/sendGrid.enums';
+import { EmailSubjectEnum, EmailTextEnum } from '../enums/mailer.enums';
 import { hosts } from '../constants/host';
 import { ConfigService } from '../config/config';
 

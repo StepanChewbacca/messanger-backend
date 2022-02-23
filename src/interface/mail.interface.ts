@@ -1,4 +1,4 @@
-import { EmailSubjectEnum, EmailTextEnum } from '../enums/sendGrid.enums';
+import { EmailSubjectEnum, EmailTextEnum } from '../enums/mailer.enums';
 
 export type TEmail = {
     email: string,
